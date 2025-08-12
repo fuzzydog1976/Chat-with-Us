@@ -133,8 +133,8 @@
         async function fetchAIResponse(personalityName, userPrompt, retries = 0) {
             // NOTE: The API_KEY is left as an empty string as per instructions.
             // In a real-world application, you would handle this securely (e.g., via a backend).
-            const API_KEY = "";
-            const MODEL_NAME = "gemini-2.5-flash-preview-05-20"; // Updated model name as per instructions
+            const API_KEY = "AIzaSyCzEmc8BlQzcqt2tbaAJmc94nKxMsb-flk";
+            const MODEL_NAME = "gemini-2.5-flash"; // Updated model name as per instructions
 
             // Lookup personality description; default to "a helpful assistant" if not found
             const personalityDescription = PERSONALITY_MAP[personalityName] || `a helpful assistant`;
