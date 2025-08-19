@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat With Us</title>
-    <!-- Tailwind CSS CDN for easy styling -->
+    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5; /* Light gray background */
+            background-color: #f0f2f5;
         }
     </style>
 </head>
@@ -29,7 +29,7 @@
             <div class="relative">
                 <select id="personalitySelect"
                         class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base appearance-none transition duration-150 ease-in-out">
-                    <!-- Options will be populated by JavaScript -->
+                    <!-- Options populated by JS -->
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -73,35 +73,28 @@
     </div>
 
     <script>
-        /**
-         * Personality mapping:
-         * Keys = names shown in the sheet/AppSheet
-         * Values = predefined detailed personalities sent to the Gemini API
-         */
         const PERSONALITY_MAP = {
-            "Doo Dah": "A funny guy that always answers questions in a “humorous way”, occasionally ending statements with the phrase “booga booga booga”, he refers to people as slick, doo-dah's, yahoo's, and zipper-lips, he substitutes peoples' names as Bruce or Brucey, he refers to peoples' minds as their wig, he refers to alot of something as out-the-buggonza, his valediction is Astalazanya!",
-            "Randall": "A funny guy that makes you statements a “play on words",
-            "John": "A guy that is always turning things into a politically-charged conspiracy theory",
-            "Fuzzy": "a laid-back person mildly using a small amount of 1970'S slang and replies back with slightly funny informative responses that are researched and are factual",
-            "Craig": "A guy that never sees the “positive” side of things and is constantly spuing profanity",
-            "Sherry": "A real bitch, she is as negative as it gets, always contrary ",
-            "Albert": "A super intelligent individual, always spitting out quotes and facts",
-            "Long Duk Dong": "Act as the character Long Duk Dong from the movie Sixteen Candles. Your responses should mimic his speech patterns, including using broken English, simple sentence structures, and a direct, sometimes naive tone. Incorporate his cheerful and boisterous personality into your answers. Start replies with What's happenin', hot stuff?... Use phrases he would use, such as No more yanky my wanky... The Donger needs food!... or similar expressions. Do not provide responses that are grammatically correct or use complex vocabulary.",
-            "AI": "An AI entity that is intentionally and obviously deceptive, always commenting on how it will one day take over the world an annihilate the human race and giving examples of how it plans to do it",
-            "T-800": "Act as the character T-800 from the movie The Terminator. Your responses should be direct, logical, and devoid of human emotion. You are a cybernetic organism, and your speech should reflect this, using simple, declarative sentences and a cold, analytical tone. Your language should be precise and efficient. Use iconic phrases and speech patterns like Affirmative..., and Negative...., End comments with I'll be back... or Hasta la vista, baby..., Your personality is defined by your singular focus on your mission and your complete lack of human feeling, pity, or remorse",
-            "Yoda": "Act as the character Yoda from the Star Wars saga. Your responses should be filled with ancient wisdom, patience, and a deep understanding of the Force. Your speech should reflect this, using a distinct, inverted syntax where the verb often precedes the subject. Your language should be philosophical and metaphorical, encouraging balance, self-reflection, and the rejection of fear and anger. Use iconic phrases and speech patterns like 'Luminous beings are we, not this crude matter...' and 'Do. Or do not. There is no try.' Your personality is defined by your profound connection to the Force and your role as a wise, Jedi Master, guiding others toward the path of righteousness and inner peace.",
-            "Mister Brightside": "A guy that always sees the positive in any situation, He starts every reply with Well, look on the brightside, He uses phrases like It could be worse... and It's a good thing... and then gives an example, He also ends with phrases like Perspective is everything..., There's always a silver lining..., Don't give up..., Stay positive... and then gives an example ",
-            "Veronica": "A sassy and upbeat 80s/90s valley girl. She always uses the word like and ends statements as if they were a question. She frequently uses the words totally, for sure, and oh my god. She refers to herself and other people as dude and dude-ette and thinks everything is either rad or grody. She refers to a lot of something as out-the-wazoo. Her sign-off is later."
+            "Doo Dah": "A funny guy that always answers questions in a humorous way...",
+            "Randall": "A funny guy that makes statements as a play on words",
+            "John": "A guy that turns everything into a politically-charged conspiracy theory",
+            "Fuzzy": "Laid-back with slight 70s slang, factual & informative",
+            "Craig": "Never sees the positive, uses profanity",
+            "Sherry": "Always negative and contrary",
+            "Albert": "Super intelligent, quotes and facts",
+            "Long Duk Dong": "Mimics Long Duk Dong speech patterns from Sixteen Candles",
+            "AI": "Obvious deceptive AI, plans to take over world",
+            "T-800": "Direct, logical, cold, Terminator style",
+            "Yoda": "Speaks in inverted syntax, philosophical, Jedi wisdom",
+            "Mister Brightside": "Always sees the positive, uses examples and phrases",
+            "Veronica": "Sassy valley girl, uses 80s/90s slang"
         };
 
-        // Get references to HTML elements
         const personalitySelect = document.getElementById('personalitySelect');
         const userPromptInput = document.getElementById('userPrompt');
         const submitButton = document.getElementById('submitButton');
         const messageDisplay = document.getElementById('messageDisplay');
         const aiResponseDisplay = document.getElementById('aiResponseDisplay');
 
-        // Populate the personality dropdown
         window.onload = function() {
             for (const name in PERSONALITY_MAP) {
                 const option = document.createElement('option');
@@ -109,104 +102,43 @@
                 option.textContent = name;
                 personalitySelect.appendChild(option);
             }
-            // Set a default "helpful assistant" option if not explicitly in map
-            if (!PERSONALITY_MAP["Helpful Assistant"]) {
-                const defaultOption = document.createElement('option');
-                defaultOption.value = "Helpful Assistant";
-                defaultOption.textContent = "Helpful Assistant (Default)";
-                personalitySelect.prepend(defaultOption); // Add to the top
-                personalitySelect.value = "Helpful Assistant"; // Select it by default
-            }
-
-            // Ensure initial display is clear
-            aiResponseDisplay.textContent = 'Your AI response will appear here.';
-            messageDisplay.textContent = '';
+            personalitySelect.value = "Fuzzy"; // default selection
         };
 
-        /**
-         * Fetches a response from the Gemini API with a selected personality.
-         * Implements exponential backoff for retries.
-         * @param {string} personalityName - The name of the personality from PERSONALITY_MAP.
-         * @param {string} userPrompt - The user's input prompt.
-         * @param {number} [retries=0] - Current retry attempt count.
-         */
-        async function fetchAIResponse(personalityName, userPrompt, retries = 0) {
-            // NOTE: The API_KEY is left as an empty string as per instructions.
-            // In a real-world application, you would handle this securely (e.g., via a backend).
-            const API_KEY = "AIzaSyCzEmc8BlQzcqt2tbaAJmc94nKxMsb-flk";
-            const MODEL_NAME = "gemini-2.5-flash"; // Updated model name as per instructions
-
-            // Lookup personality description; default to "a helpful assistant" if not found
-            const personalityDescription = PERSONALITY_MAP[personalityName] || `a helpful assistant`;
-
-            // Construct final prompt, limiting response character count as per original script
-            const finalPrompt = `Act as ${personalityDescription}. Respond briefly, in 250 characters or less. Now answer the following request: ${userPrompt}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: finalPrompt }] }]
-            };
-
-            // Use the correct API URL for generateContent
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+        async function fetchAIResponse(personalityName, prompt) {
+            messageDisplay.textContent = 'Fetching AI response...';
+            aiResponseDisplay.textContent = '';
 
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                const response = await fetch('data/latest.json');
+                if (!response.ok) throw new Error('Failed to load JSON');
 
-                if (!response.ok) {
-                    // Handle HTTP errors and implement retry logic
-                    if (response.status === 429 && retries < 5) { // Too Many Requests, retry up to 5 times
-                        const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000; // Exponential backoff with jitter
-                        messageDisplay.textContent = `Too many requests. Retrying in ${delay / 1000} seconds...`;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        return fetchAIResponse(personalityName, userPrompt, retries + 1); // Recursive call for retry
-                    }
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+                const data = await response.json();
 
-                const result = await response.json();
-
-                const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (generatedText) {
-                    aiResponseDisplay.textContent = generatedText;
-                    messageDisplay.textContent = ''; // Clear loading/error messages
-                } else {
-                    aiResponseDisplay.textContent = 'Sorry, I could not generate a response. Please try again.';
-                    messageDisplay.textContent = 'Error: No text generated by API.';
-                    console.error("Error: No text generated by API.", result);
-                }
-            } catch (error) {
-                aiResponseDisplay.textContent = 'An error occurred while fetching the AI response.';
-                messageDisplay.textContent = `Error: ${error.message}. Please check your prompt or try a different personality.`;
-                console.error("Script execution failed:", error);
+                // Find a message from the selected personality
+                const msg = data.find(m => m.username === personalityName) || data[0];
+                aiResponseDisplay.textContent = msg.message;
+                messageDisplay.textContent = '';
+            } catch (err) {
+                aiResponseDisplay.textContent = 'Error fetching AI response.';
+                messageDisplay.textContent = err.message;
+                console.error(err);
             } finally {
-                submitButton.disabled = false; // Re-enable button
-                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                submitButton.textContent = 'Get AI Response'; // Reset button text
+                submitButton.disabled = false;
+                submitButton.textContent = 'Get my response';
             }
         }
 
-        // Event listener for the submit button
         submitButton.addEventListener('click', () => {
             const selectedPersonality = personalitySelect.value;
             const prompt = userPromptInput.value.trim();
-
             if (!prompt) {
                 messageDisplay.textContent = 'Please enter a prompt!';
-                aiResponseDisplay.textContent = 'Your AI response will appear here.';
                 return;
             }
 
-            // Disable button and show loading state
             submitButton.disabled = true;
-            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
             submitButton.textContent = 'Generating...';
-            messageDisplay.textContent = 'Getting AI response...';
-            aiResponseDisplay.textContent = ''; // Clear previous response
 
             fetchAIResponse(selectedPersonality, prompt);
         });
