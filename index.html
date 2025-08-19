@@ -4,61 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat With Us</title>
-    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        .chat-bubble { display: flex; align-items: flex-start; gap: 0.75rem; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
     <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl border border-gray-200">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8 tracking-tight">
-            Chat with Us
-        </h1>
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8 tracking-tight">Chat with Us</h1>
 
-        <!-- Personality Selection -->
         <div class="mb-6">
-            <label for="personalitySelect" class="block text-lg font-medium text-gray-700 mb-2">
-                Choose one of us:
-            </label>
-            <div class="relative">
-                <select id="personalitySelect"
-                        class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base appearance-none transition duration-150 ease-in-out">
-                    <!-- Options populated by JS -->
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-            </div>
+            <label for="personalitySelect" class="block text-lg font-medium text-gray-700 mb-2">Choose one of us:</label>
+            <select id="personalitySelect" class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base appearance-none transition duration-150 ease-in-out">
+                <!-- Options will be populated by JavaScript -->
+            </select>
         </div>
 
-        <!-- User Prompt Input -->
         <div class="mb-6">
-            <label for="userPrompt" class="block text-lg font-medium text-gray-700 mb-2">
-                Ask us a question or make a comment:
-            </label>
-            <textarea id="userPrompt" rows="4"
-                      class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base resize-y transition duration-150 ease-in-out"
-                      placeholder="Type your question or statement here..."></textarea>
+            <label for="userPrompt" class="block text-lg font-medium text-gray-700 mb-2">Ask us a question or make a comment:</label>
+            <textarea id="userPrompt" rows="4" class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base resize-y transition duration-150 ease-in-out" placeholder="Type your question or statement here..."></textarea>
         </div>
 
-        <!-- Submit Button -->
-        <button id="submitButton"
-                class="w-full flex justify-center items-center px-6 py-3 border border-transparent text-lg font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:-translate-y-0.5 active:scale-95">
+        <button id="submitButton" class="w-full flex justify-center items-center px-6 py-3 border border-transparent text-lg font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:-translate-y-0.5 active:scale-95">
             Get my response
         </button>
 
-        <!-- Loading Indicator / Message -->
         <div id="messageDisplay" class="mt-6 text-center text-lg font-medium text-gray-600"></div>
 
-        <!-- AI Response Display -->
         <div class="mt-8 bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-md">
             <h2 class="text-2xl font-bold text-blue-800 mb-4 flex items-center">
                 <svg class="w-7 h-7 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -66,27 +40,27 @@
                 </svg>
                 My Response:
             </h2>
-            <div id="aiResponseDisplay" class="text-gray-800 text-lg leading-relaxed whitespace-pre-wrap">
-                Your AI response will appear here.
-            </div>
+            <div id="aiResponseDisplay" class="text-gray-800 text-lg leading-relaxed whitespace-pre-wrap">Your AI response will appear here.</div>
         </div>
+
+        <div id="chatHistory" class="mt-6 flex flex-col gap-4"></div>
     </div>
 
     <script>
         const PERSONALITY_MAP = {
-            "Doo Dah": "A funny guy that always answers questions in a humorous way...",
-            "Randall": "A funny guy that makes statements as a play on words",
-            "John": "A guy that turns everything into a politically-charged conspiracy theory",
-            "Fuzzy": "Laid-back with slight 70s slang, factual & informative",
-            "Craig": "Never sees the positive, uses profanity",
-            "Sherry": "Always negative and contrary",
-            "Albert": "Super intelligent, quotes and facts",
-            "Long Duk Dong": "Mimics Long Duk Dong speech patterns from Sixteen Candles",
-            "AI": "Obvious deceptive AI, plans to take over world",
-            "T-800": "Direct, logical, cold, Terminator style",
-            "Yoda": "Speaks in inverted syntax, philosophical, Jedi wisdom",
-            "Mister Brightside": "Always sees the positive, uses examples and phrases",
-            "Veronica": "Sassy valley girl, uses 80s/90s slang"
+            "Doo Dah": "A funny guy that always answers questions in a “humorous way”, occasionally ending statements with the phrase “booga booga booga”...",
+            "Randall": "A funny guy that makes you statements a “play on words...",
+            "John": "A guy that is always turning things into a politically-charged conspiracy theory",
+            "Fuzzy": "a laid-back person mildly using a small amount of 1970'S slang...",
+            "Craig": "A guy that never sees the “positive” side of things...",
+            "Sherry": "A real bitch, she is as negative as it gets, always contrary ",
+            "Albert": "A super intelligent individual, always spitting out quotes and facts",
+            "Long Duk Dong": "Act as the character Long Duk Dong from the movie Sixteen Candles...",
+            "AI": "An AI entity that is intentionally and obviously deceptive...",
+            "T-800": "Act as the character T-800 from the movie The Terminator...",
+            "Yoda": "Act as the character Yoda from the Star Wars saga...",
+            "Mister Brightside": "A guy that always sees the positive in any situation...",
+            "Veronica": "A sassy and upbeat 80s/90s valley girl..."
         };
 
         const personalitySelect = document.getElementById('personalitySelect');
@@ -94,35 +68,92 @@
         const submitButton = document.getElementById('submitButton');
         const messageDisplay = document.getElementById('messageDisplay');
         const aiResponseDisplay = document.getElementById('aiResponseDisplay');
+        const chatHistory = document.getElementById('chatHistory');
 
-        window.onload = function() {
-            for (const name in PERSONALITY_MAP) {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                personalitySelect.appendChild(option);
-            }
-            personalitySelect.value = "Fuzzy"; // default selection
-        };
+        // Populate personality dropdown
+        for (const name in PERSONALITY_MAP) {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            personalitySelect.appendChild(option);
+        }
 
-        async function fetchAIResponse(personalityName, prompt) {
-            messageDisplay.textContent = 'Fetching AI response...';
-            aiResponseDisplay.textContent = '';
-
+        async function loadLatestMessages() {
             try {
                 const response = await fetch('data/latest.json');
-                if (!response.ok) throw new Error('Failed to load JSON');
-
+                if (!response.ok) {
+                    console.warn('Could not load latest.json, using empty array.');
+                    return [];
+                }
                 const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching latest.json:', error);
+                return [];
+            }
+        }
 
-                // Find a message from the selected personality
-                const msg = data.find(m => m.username === personalityName) || data[0];
-                aiResponseDisplay.textContent = msg.message;
-                messageDisplay.textContent = '';
-            } catch (err) {
+        function renderChat(messages) {
+            chatHistory.innerHTML = '';
+            if (messages.length === 0) {
+                chatHistory.innerHTML = '<div class="text-center text-gray-500 italic p-2">No messages yet!</div>';
+                return;
+            }
+
+            messages.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'chat-bubble p-2 rounded-lg';
+
+                const avatarImg = document.createElement('img');
+                avatarImg.src = `avatars/${post.username || 'User'}.png`;
+                avatarImg.className = 'w-10 h-10 rounded-full';
+
+                const contentDiv = document.createElement('div');
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'font-bold';
+                nameDiv.textContent = post.username || 'User';
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'text-gray-800 whitespace-pre-wrap';
+                msgDiv.textContent = post.message || '';
+
+                contentDiv.appendChild(nameDiv);
+                contentDiv.appendChild(msgDiv);
+                postElement.appendChild(avatarImg);
+                postElement.appendChild(contentDiv);
+                chatHistory.appendChild(postElement);
+            });
+        }
+
+        loadLatestMessages().then(renderChat);
+
+        async function fetchAIResponse(personalityName, userPrompt) {
+            const API_KEY = "AIzaSyCzEmc8BlQzcqt2tbaAJmc94nKxMsb-flk"; 
+            const MODEL_NAME = "gemini-2.5-flash";
+            const personalityDescription = PERSONALITY_MAP[personalityName] || 'a helpful assistant';
+            const finalPrompt = `Act as ${personalityDescription}. Respond briefly, in 250 characters or less. Now answer the following request: ${userPrompt}`;
+
+            const payload = { contents: [{ parts: [{ text: finalPrompt }] }] };
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (generatedText) {
+                    aiResponseDisplay.textContent = generatedText;
+                } else {
+                    aiResponseDisplay.textContent = 'Sorry, no response generated.';
+                    console.error('No text from API:', result);
+                }
+            } catch (error) {
                 aiResponseDisplay.textContent = 'Error fetching AI response.';
-                messageDisplay.textContent = err.message;
-                console.error(err);
+                console.error(error);
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Get my response';
@@ -139,6 +170,8 @@
 
             submitButton.disabled = true;
             submitButton.textContent = 'Generating...';
+            messageDisplay.textContent = 'Getting AI response...';
+            aiResponseDisplay.textContent = '';
 
             fetchAIResponse(selectedPersonality, prompt);
         });
