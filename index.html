@@ -128,7 +128,7 @@
         loadLatestMessages().then(renderChat);
 
         async function fetchAIResponse(personalityName, userPrompt) {
-            const API_KEY = "AIzaSyCzEmc8BlQzcqt2tbaAJmc94nKxMsb-flk"; 
+            const API_KEY = "AIzaSyCNTrRis-K2ce9ZOnPNWA0eCFzuH9bDK5E"; 
             const MODEL_NAME = "gemini-2.5-flash";
             const personalityDescription = PERSONALITY_MAP[personalityName] || 'a helpful assistant';
             const finalPrompt = `Act as ${personalityDescription}. Respond briefly, in 250 characters or less. Now answer the following request: ${userPrompt}`;
